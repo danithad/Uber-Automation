@@ -3,6 +3,7 @@ import React, { useState, useCallback } from 'react';
 interface Coordinates {
   latitude: number;
   longitude: number;
+  locationName?: string;
 }
 
 interface ExampleLink {
@@ -46,20 +47,29 @@ const LocationConverter: React.FC = () => {
   ];
 
   const extractCoordinates = useCallback((link: string): Coordinates | null => {
-    // Google Maps patterns
+    console.log('Extracting coordinates from:', link);
+    
+    // Google Maps patterns - more comprehensive
     const googlePatterns = [
       /maps\.google\.com\/maps\?q=(-?\d+\.\d+),(-?\d+\.\d+)/,
       /maps\.google\.com\/maps\?ll=(-?\d+\.\d+),(-?\d+\.\d+)/,
       /maps\.google\.com\/maps\?daddr=(-?\d+\.\d+),(-?\d+\.\d+)/,
       /maps\.google\.com\/maps\?saddr=(-?\d+\.\d+),(-?\d+\.\d+)/,
-      /maps\.google\.com\/maps\?cid=.*?@(-?\d+\.\d+),(-?\d+\.\d+)/
+      /maps\.google\.com\/maps\?cid=.*?@(-?\d+\.\d+),(-?\d+\.\d+)/,
+      /google\.com\/maps.*?@(-?\d+\.\d+),(-?\d+\.\d+)/,
+      /maps\.google\.com.*?@(-?\d+\.\d+),(-?\d+\.\d+)/,
+      /www\.google\.com\/maps.*?@(-?\d+\.\d+),(-?\d+\.\d+)/,
+      /maps\.google\.com\/maps.*?@(-?\d+\.\d+),(-?\d+\.\d+)/,
+      /google\.com\/maps\?q=(-?\d+\.\d+),(-?\d+\.\d+)/
     ];
 
     // Google Maps short links
     const googleShortPatterns = [
       /g\.co\/kgs\/[a-zA-Z0-9]+/,
       /goo\.gl\/maps\/[a-zA-Z0-9]+/,
-      /maps\.app\.goo\.gl\/[a-zA-Z0-9]+/
+      /maps\.app\.goo\.gl\/[a-zA-Z0-9]+/,
+      /maps\.google\.com\/maps\/[a-zA-Z0-9]+/,
+      /google\.com\/maps\/[a-zA-Z0-9]+/
     ];
 
     // Apple Maps patterns
@@ -74,18 +84,23 @@ const LocationConverter: React.FC = () => {
     for (const pattern of googlePatterns) {
       const match = link.match(pattern);
       if (match) {
-        return {
-          latitude: parseFloat(match[1]),
-          longitude: parseFloat(match[2])
-        };
+        console.log('Google Maps match found:', match);
+        const lat = parseFloat(match[1]);
+        const lng = parseFloat(match[2]);
+        
+        // Validate coordinates
+        if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+          // Try to extract location name from the URL
+          const locationName = extractLocationName(link);
+          return { latitude: lat, longitude: lng, locationName };
+        }
       }
     }
 
     // Try Google Maps short links
     for (const pattern of googleShortPatterns) {
       if (pattern.test(link)) {
-        // For short links, we need to follow the redirect
-        // This will be handled in the processLocationLink function
+        console.log('Short link detected, will handle in processLocationLink');
         return null; // Let the async handler deal with it
       }
     }
@@ -94,42 +109,131 @@ const LocationConverter: React.FC = () => {
     for (const pattern of applePatterns) {
       const match = link.match(pattern);
       if (match) {
-        return {
-          latitude: parseFloat(match[1]),
-          longitude: parseFloat(match[2])
-        };
+        console.log('Apple Maps match found:', match);
+        const lat = parseFloat(match[1]);
+        const lng = parseFloat(match[2]);
+        
+        // Validate coordinates
+        if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+          // Try to extract location name from the URL
+          const locationName = extractLocationName(link);
+          return { latitude: lat, longitude: lng, locationName };
+        }
       }
     }
 
-    // Additional patterns for various Google Maps formats
+    // Additional patterns for various formats
     const additionalPatterns = [
       /@(-?\d+\.\d+),(-?\d+\.\d+)/,
       /q=(-?\d+\.\d+),(-?\d+\.\d+)/,
       /ll=(-?\d+\.\d+),(-?\d+\.\d+)/,
-      /coordinate=(-?\d+\.\d+),(-?\d+\.\d+)/
+      /coordinate=(-?\d+\.\d+),(-?\d+\.\d+)/,
+      /lat=(-?\d+\.\d+).*?lng=(-?\d+\.\d+)/,
+      /latitude=(-?\d+\.\d+).*?longitude=(-?\d+\.\d+)/,
+      /daddr=(-?\d+\.\d+),(-?\d+\.\d+)/,
+      /saddr=(-?\d+\.\d+),(-?\d+\.\d+)/,
+      /(-?\d+\.\d+),(-?\d+\.\d+)/ // Generic lat,lng pattern
     ];
 
     for (const pattern of additionalPatterns) {
       const match = link.match(pattern);
       if (match) {
-        return {
-          latitude: parseFloat(match[1]),
-          longitude: parseFloat(match[2])
-        };
+        console.log('Additional pattern match found:', match);
+        const lat = parseFloat(match[1]);
+        const lng = parseFloat(match[2]);
+        
+        // Validate coordinates
+        if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+          // Try to extract location name from the URL
+          const locationName = extractLocationName(link);
+          return { latitude: lat, longitude: lng, locationName };
+        }
       }
     }
 
+    // Final fallback: try to find any coordinate-like pattern in the URL
+    const fallbackPattern = /(-?\d+\.\d+),(-?\d+\.\d+)/g;
+    let match;
+    while ((match = fallbackPattern.exec(link)) !== null) {
+      const lat = parseFloat(match[1]);
+      const lng = parseFloat(match[2]);
+      
+      // Validate coordinates
+      if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+        console.log('Fallback pattern match found:', match);
+        // Try to extract location name from the URL
+        const locationName = extractLocationName(link);
+        return { latitude: lat, longitude: lng, locationName };
+      }
+    }
+    
+    console.log('No valid coordinates found');
     return null;
   }, []);
+
+  const extractLocationName = useCallback((link: string): string | undefined => {
+    // Try to extract location name from various URL patterns
+    const namePatterns = [
+      /[?&]name=([^&]+)/,
+      /[?&]q=([^&]+)/,
+      /[?&]address=([^&]+)/,
+      /[?&]place=([^&]+)/,
+      /[?&]location=([^&]+)/
+    ];
+
+    for (const pattern of namePatterns) {
+      const match = link.match(pattern);
+      if (match) {
+        const decodedName = decodeURIComponent(match[1]);
+        console.log('Location name extracted:', decodedName);
+        return decodedName;
+      }
+    }
+
+    return undefined;
+  }, []);
+
+  const openUberWeb = useCallback(() => {
+    if (!coordinates) return;
+    
+    const { latitude, longitude, locationName } = coordinates;
+    // Use extracted location name or default to "Shared Location"
+    const nickname = locationName ? encodeURIComponent(locationName) : 'Shared%20Location';
+    const uberWebLink = `https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=${latitude}&dropoff[longitude]=${longitude}&dropoff[nickname]=${nickname}`;
+    
+    console.log('Opening Uber web link:', uberWebLink);
+    window.open(uberWebLink, '_blank');
+  }, [coordinates]);
+
+  const openUberDeepLink = useCallback(() => {
+    if (!coordinates) return;
+    
+    const { latitude, longitude, locationName } = coordinates;
+    // Use extracted location name or default to "Shared Location"
+    const nickname = locationName ? encodeURIComponent(locationName) : 'Shared%20Location';
+    const uberDeepLink = `uber://?action=setPickup&pickup=my_location&dropoff[latitude]=${latitude}&dropoff[longitude]=${longitude}&dropoff[nickname]=${nickname}`;
+    
+    console.log('Opening Uber deep link:', uberDeepLink);
+    
+    // Try to open the deep link
+    window.location.href = uberDeepLink;
+    
+    // Fallback after a short delay if the app doesn't open
+    setTimeout(() => {
+      console.log('Falling back to web version');
+      openUberWeb();
+    }, 2000);
+  }, [coordinates, openUberWeb]);
 
   const processLocationLink = useCallback(() => {
     const link = locationLink.trim();
     
     if (!link) {
-      setError('Please paste a location link first.');
-      setCoordinates(null);
-      return;
+      return; // Just return without showing any error
     }
+
+    // Clear any existing error when processing
+    setError('');
 
     setIsProcessing(true);
     setError('');
@@ -139,23 +243,50 @@ const LocationConverter: React.FC = () => {
     
     if (isShortLink) {
       // Follow the redirect for short links
-      fetch(link, { method: 'HEAD', redirect: 'follow' })
+      console.log('Processing short link:', link);
+      
+      // Try to resolve the short link
+      fetch(link, { 
+        method: 'HEAD', 
+        redirect: 'follow',
+        mode: 'no-cors' // Try to avoid CORS issues
+      })
         .then(response => {
           const finalUrl = response.url;
+          console.log('Short link resolved to:', finalUrl);
           const coords = extractCoordinates(finalUrl);
           
           if (coords) {
             setCoordinates(coords);
             setError('');
+            console.log('Coordinates extracted from short link:', coords);
           } else {
-            setError('Could not extract coordinates from the short link. Please try the full Google Maps link.');
-            setCoordinates(null);
+            // Try to extract from the original short link as fallback
+            const fallbackCoords = extractCoordinates(link);
+            if (fallbackCoords) {
+              setCoordinates(fallbackCoords);
+              setError('');
+              console.log('Coordinates extracted from short link fallback:', fallbackCoords);
+            } else {
+              setError('Could not extract coordinates from the short link. Please try the full Google Maps link.');
+              setCoordinates(null);
+            }
           }
           setIsProcessing(false);
         })
-        .catch(() => {
-          setError('Could not resolve the short link. Please try the full Google Maps link.');
-          setCoordinates(null);
+        .catch((error) => {
+          console.error('Error resolving short link:', error);
+          
+          // Try to extract from the original short link as fallback
+          const fallbackCoords = extractCoordinates(link);
+          if (fallbackCoords) {
+            setCoordinates(fallbackCoords);
+            setError('');
+            console.log('Coordinates extracted from short link fallback after error:', fallbackCoords);
+          } else {
+            setError('Could not resolve the short link. Please try the full Google Maps link.');
+            setCoordinates(null);
+          }
           setIsProcessing(false);
         });
     } else {
@@ -177,32 +308,7 @@ const LocationConverter: React.FC = () => {
         setIsProcessing(false);
       }, 300);
     }
-  }, [locationLink, extractCoordinates]);
-
-  const openUberWeb = useCallback(() => {
-    if (!coordinates) return;
-    
-    const { latitude, longitude } = coordinates;
-    // Use the correct Uber web format that sets destination only
-    const uberWebLink = `https://m.uber.com/ul/?dropoff[latitude]=${latitude}&dropoff[longitude]=${longitude}`;
-    
-    window.open(uberWebLink, '_blank');
-  }, [coordinates]);
-
-  const openUberDeepLink = useCallback(() => {
-    if (!coordinates) return;
-    
-    const { latitude, longitude } = coordinates;
-    const uberDeepLink = `uber://?dropoff[latitude]=${latitude}&dropoff[longitude]=${longitude}`;
-    
-    // Try to open the deep link
-    window.location.href = uberDeepLink;
-    
-    // Fallback after a short delay if the app doesn't open
-    setTimeout(() => {
-      openUberWeb();
-    }, 2000);
-  }, [coordinates, openUberWeb]);
+  }, [locationLink, extractCoordinates, openUberDeepLink]);
 
   const handleExampleClick = useCallback((example: ExampleLink) => {
     setLocationLink(example.url);
@@ -251,7 +357,7 @@ const LocationConverter: React.FC = () => {
                disabled={isProcessing}
              >
                <span className="btn-text">
-                 {isProcessing ? 'Processing...' : 'Open in Uber'}
+                 {isProcessing ? 'Processing...' : 'Extract'}
                </span>
              </button>
           </div>
@@ -277,15 +383,15 @@ const LocationConverter: React.FC = () => {
               
             </div>
             
-                                      <div className="action-buttons">
-               <button className="uber-btn" onClick={openUberDeepLink}>
-                 <span>Book Uber</span>
-               </button>
-             </div>
+            <div className="action-buttons">
+              <button className="uber-btn" onClick={openUberDeepLink}>
+                <span>Book Uber</span>
+              </button>
+            </div>
           </div>
         )}
 
-                 {error && (
+                 {error && !coordinates && (
            <div className="error-section">
              <div className="error-animation">
                <div className="error-icon">!</div>
