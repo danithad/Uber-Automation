@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp to Uber - Location Link Converter</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="hero-section">
+            <div class="logo">
+                <span class="logo-icon">🚗</span>
+                <h1>WhatsApp to Uber</h1>
+            </div>
+            <p class="hero-subtitle">Paste a location link and open it directly in Uber</p>
+        </div>
+
+        <main class="main-card">
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <textarea 
+                        id="locationLink" 
+                        placeholder="Paste your location link here..."
+                        rows="2"
+                    ></textarea>
+                    <button id="openUberBtn" class="primary-btn">
+                        <span class="btn-icon">🚗</span>
+                        <span class="btn-text">Open in Uber</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="result" class="result-section hidden">
+                <div class="success-animation">
+                    <div class="checkmark">✓</div>
+                </div>
+                <div class="coordinates">
+                    <h3>📍 Location Found</h3>
+                    <div class="coord-display">
+                        <div class="coord-item">
+                            <span class="coord-label">Latitude</span>
+                            <span class="coord-value" id="latitude">-</span>
+                        </div>
+                        <div class="coord-item">
+                            <span class="coord-label">Longitude</span>
+                            <span class="coord-value" id="longitude">-</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="openUberMain" class="uber-main-btn">
+                        <span class="btn-icon">🚗</span>
+                        <span>Open in Uber</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="error" class="error-section hidden">
+                <div class="error-animation">
+                    <div class="error-icon">⚠️</div>
+                </div>
+                <p>Invalid link format. Please paste a valid Google Maps or Apple Maps link.</p>
+            </div>
+        </main>
+
+        <div class="examples-section">
+            <div class="examples-container">
+                <h3>💡 Try these examples</h3>
+                <div class="example-buttons">
+                    <button class="example-btn" onclick="testLink('google')">
+                        <span class="example-icon">🗺️</span>
+                        <span>Google Maps</span>
+                    </button>
+                    <button class="example-btn" onclick="testLink('apple-old')">
+                        <span class="example-icon">🍎</span>
+                        <span>Apple Maps</span>
+                    </button>
+                    <button class="example-btn" onclick="testLink('apple-new')">
+                        <span class="example-icon">📍</span>
+                        <span>Apple Place</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
