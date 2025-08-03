@@ -42,15 +42,18 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
     <title>Ride Launcher - Instant Uber Booking</title>
 </head>
 <body>
     <div class="container">
         <div class="hero-section">
-            <div class="logo">
-                <span class="logo-icon">🚗</span>
-                <h1>Ride Launcher</h1>
-            </div>
+                    <div class="logo">
+            <span class="logo-icon">R</span>
+            <h1>Ride Launcher</h1>
+        </div>
             <p class="hero-subtitle">Paste a location link and open it directly in Uber</p>
         </div>
 
@@ -63,8 +66,8 @@
                         rows="2"
                     ></textarea>
                     <button id="openUberBtn" class="primary-btn">
-                        <span class="btn-icon">🚗</span>
-                        <span class="btn-text">Open in Uber</span>
+                        <span class="btn-icon">E</span>
+                        <span class="btn-text">Extract Location</span>
                     </button>
                 </div>
             </div>
@@ -74,7 +77,7 @@
                     <div class="checkmark">✓</div>
                 </div>
                 <div class="coordinates">
-                    <h3>📍 Location Found</h3>
+                    <h3>Location Found</h3>
                     <div class="coord-display">
                         <div class="coord-item">
                             <span class="coord-label">Latitude</span>
@@ -89,7 +92,7 @@
                 
                 <div class="action-buttons">
                     <button id="openUberMain" class="uber-main-btn">
-                        <span class="btn-icon">🚗</span>
+                        <span class="btn-icon">U</span>
                         <span>Open in Uber</span>
                     </button>
                 </div>
@@ -97,7 +100,7 @@
 
             <div id="error" class="error-section hidden">
                 <div class="error-animation">
-                    <div class="error-icon">⚠️</div>
+                    <div class="error-icon">!</div>
                 </div>
                 <p>Invalid link format. Please paste a valid Google Maps or Apple Maps link.</p>
             </div>
@@ -105,19 +108,23 @@
 
         <div class="examples-section">
             <div class="examples-container">
-                <h3>💡 Try these examples</h3>
+                <h3>Try these examples</h3>
                 <div class="example-buttons">
                     <button class="example-btn" onclick="testLink('google')">
-                        <span class="example-icon">🗺️</span>
+                        <span class="example-icon">G</span>
                         <span>Google Maps</span>
                     </button>
-                    <button class="example-btn" onclick="testLink('apple-old')">
-                        <span class="example-icon">🍎</span>
-                        <span>Apple Maps</span>
+                    <button class="example-btn" onclick="testLink('google-short')">
+                        <span class="example-icon">S</span>
+                        <span>Google Short</span>
                     </button>
-                    <button class="example-btn" onclick="testLink('apple-new')">
-                        <span class="example-icon">📍</span>
-                        <span>Apple Place</span>
+                    <button class="example-btn" onclick="testLink('at-prefix')">
+                        <span class="example-icon">@</span>
+                        <span>@ Prefix</span>
+                    </button>
+                    <button class="example-btn" onclick="testLink('apple-maps')">
+                        <span class="example-icon">A</span>
+                        <span>Apple Maps</span>
                     </button>
                 </div>
             </div>
