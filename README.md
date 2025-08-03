@@ -1,77 +1,71 @@
-# 📍 WhatsApp to Uber - Location Link Converter
+# 📍 Ride Launcher
 
-A modern, sleek web application that instantly converts location links from WhatsApp, Google Maps, and Apple Maps into Uber ride requests with a single click.
-
-![Uber Automation Demo](https://img.shields.io/badge/Status-Live-success)
-![Version](https://img.shields.io/badge/Version-2.0-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
+A modern React + Vite web application that converts Google Maps and Apple Maps location links to Uber deep links instantly. Launch your ride with one click!
 
 ## ✨ Features
 
-- **🎯 Smart Link Detection**: Automatically detects and extracts coordinates from 15+ map link formats
-- **🚗 One-Click Uber Integration**: Single button to open location directly in Uber (app + web fallback)
-- **🎨 Modern UI**: Clean, responsive design with authentic Uber color palette (#000000, #00D4AA)
-- **📱 Cross-Platform**: Seamless experience on desktop and mobile devices
-- **🗺️ Multiple Sources**: Google Maps, Apple Maps, WhatsApp location shares, and direct coordinates
-- **⚡ Lightning Fast**: Instant coordinate extraction and validation
+- **🔗 Universal Link Support**: Accepts Google Maps and Apple Maps location links
+- **📍 Smart Coordinate Extraction**: Automatically extracts latitude and longitude from various link formats
+- **🌍 Reverse Geocoding**: Uses OpenStreetMap Nominatim API to convert coordinates to human-readable addresses
+- **✅ Confirmation Display**: Shows "You're about to book an Uber to: [Address]" with coordinates
+- **🚖 One-Click Uber Launch**: Generates and opens Uber deep links with destination pre-filled
+- **💾 Local Storage**: Saves destinations so you can return later and still use them
+- **🔄 Auto-Load**: Automatically loads previously saved locations on page refresh
+- **⚡ Loading States**: Beautiful loading spinner during API calls
+- **❌ Error Handling**: Friendly error messages for failed extractions or API calls
+- **📱 Mobile-First**: Responsive design optimized for mobile devices
+- **🎨 Modern UI**: Clean, beautiful interface with smooth animations
+- **🚀 Fast Performance**: Built with Vite for lightning-fast development and builds
+
+## 🛠️ Tech Stack
+
+- **React 18** - Modern React with hooks and TypeScript
+- **Vite** - Next-generation frontend tooling
+- **TypeScript** - Type-safe development
+- **OpenStreetMap Nominatim API** - Reverse geocoding service
+- **CSS3** - Modern styling with gradients, animations, and responsive design
+- **Vercel** - Deployment and hosting platform
+
+## 📱 How It Works
+
+1. **📋 Paste Link**: Copy and paste a Google Maps or Apple Maps location link
+2. **🔍 Extract Location**: App automatically extracts coordinates and fetches the address
+3. **✅ Confirm Destination**: Review the destination address and coordinates
+4. **🚖 Launch Uber**: Click "Open in Uber" to launch the Uber app with your destination
+5. **💾 Auto-Save**: Your destination is saved for future use
 
 ## 🔗 Supported Link Formats
 
 ### Google Maps
-- `https://maps.google.com/maps?q=12.935192,77.614177`
-- `https://maps.google.com/maps?ll=12.935192,77.614177`
-- `https://www.google.com/maps/@12.935192,77.614177,15z`
-- `https://maps.google.com/maps?daddr=12.935192,77.614177`
-- `https://maps.google.com/maps?cid=123456789@12.935192,77.614177`
+- `https://www.google.com/maps?q=12.935192,77.614177`
+- `https://maps.google.com/@12.935192,77.614177,15z`
+- `https://www.google.com/maps/place/Location/@12.935192,77.614177`
+- `https://goo.gl/maps/xyz123` (after redirect)
 
 ### Apple Maps
 - `https://maps.apple.com/?ll=12.935192,77.614177`
-- `https://maps.apple.com/?daddr=12.935192,77.614177`
-- `https://maps.apple.com/place?coordinate=12.916645,77.583374`
+- `https://maps.apple.com/?q=12.935192,77.614177`
 
-## 📱 Uber Integration
-
-The app creates two types of Uber links:
-
-1. **Deep Link** (for mobile apps):
-   ```
-   uber://?action=setPickup&pickup=my_location&dropoff[latitude]=LAT&dropoff[longitude]=LNG
-   ```
-
-2. **Web Link** (fallback):
-   ```
-   https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=LAT&dropoff[longitude]=LNG
-   ```
-
-## 🛠️ Technical Stack
-
-- **React 18** - Modern React with hooks
-- **TypeScript** - Type safety and better development experience
-- **CSS3** - Modern styling with glassmorphism and animations
-- **Create React App** - Zero-configuration build tool
-- **Responsive Design** - Works on all devices
-
-## 📦 Development
+## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 16+ 
+- Node.js 14+ 
 - npm or yarn
 
-### Installation
+### Development Setup
+
+1. **Clone the repository**:
 ```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm start
-
-# Build for production
-npm run build
-
-# Run tests
-npm test
+git clone https://github.com/yourusername/ride-launcher.git
+cd ride-launcher
 ```
 
+2. **Install dependencies**:
+```bash
+npm install
+```
+
+3. **Start development server**:
 ### Project Structure
 ```
 src/

@@ -1,36 +1,41 @@
 {
-  "name": "whatsapp-to-uber",
-  "version": "2.0.0",
-  "description": "A modern web app that converts WhatsApp location links to Uber deep links with a single click",
+  "name": "ride-launcher",
+  "version": "1.0.0",
+  "description": "A React + Vite web application that converts Google Maps/Apple Maps links to Uber deep links",
+  "type": "module",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "keywords": [
     "uber",
-    "whatsapp",
+    "google-maps",
+    "apple-maps",
     "location",
     "maps",
     "automation",
     "deep-link",
-    "ride-sharing"
+    "ride-sharing",
+    "react",
+    "vite"
   ],
   "author": "Your Name",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/whatsapp-to-uber.git"
+    "url": "https://github.com/yourusername/ride-launcher.git"
   },
-  "homepage": "https://whatsapp-to-uber.vercel.app",
+  "homepage": "https://ride-launcher.vercel.app",
   "dependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "typescript": "^4.9.5"
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.3",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5"
   },
   "browserslist": {
     "production": [

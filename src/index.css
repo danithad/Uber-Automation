@@ -1,3 +1,15 @@
+/* Base styles for Ride Launcher */
+:root {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -5,25 +17,42 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #333333 100%);
-  min-height: 100vh;
+  font-family: inherit;
+  line-height: inherit;
   color: #333;
-  line-height: 1.6;
-  overflow-x: hidden;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  margin: 0;
 }
 
-html {
-  scroll-behavior: smooth;
+#root {
+  width: 100%;
+  min-height: 100vh;
 }
 
-/* Focus styles for accessibility */
-button:focus, textarea:focus, input:focus {
+/* Ensure consistent button and input styling */
+button, input, textarea {
+  font-family: inherit;
+}
+
+/* Remove default button styles */
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus styles */
+:focus-visible {
   outline: 2px solid #667eea;
   outline-offset: 2px;
 }
-
-/* Smooth scrolling */
-* {
-  scroll-behavior: smooth;
-} 
